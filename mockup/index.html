@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en" ng-app="clixplorer">
+	<head>
+		<title>Clixplorer</title>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/font-awesome.min.css">
+	</head>
+	<body ng-controller="main">
+		<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+			<div class="container">
+				<a class="navbar-brand" href="#">Clixplorer</a>
+			</div>
+		</nav>
+		<div class="container pt-5 pb-5 md-5">
+			<div class="card-group">
+				<div class="card text-center card-outline-info mt-2">
+					<div class="card-header card-outline-info">
+						<span class="fa fa-cube"></span>&nbsp;Best block
+					</div>
+					<div class="card-body card-block">
+						<h4 class="card-title">
+							<span aria-count-up="">#&nbsp;{{info.BestBlockNumber}}</span>
+						</h4>
+					</div>
+				</div>
+				<div class="card text-center card-outline-info mt-2">
+					<div class="card-header card-outline-info">
+						<span class="fa fa-user-circle-o"></span>&nbsp;Last signer
+					</div>
+					<div class="card-body card-block">
+						<h4 class="card-title">
+							<span aria-count-up="">{{info.LastSigner}}</span>
+						</h4>
+					</div>
+				</div>
+			</div> <!-- card-group -->
+			<div class="row">
+				<div class="col-sm-6 mt-4">
+					<div class="card">
+						<div class="card-body">
+							<h3>
+								<span class="fa fa-cubes"></span>&nbsp;Transactions
+								<a class="btn btn-secondary btn-sm float-right" href="/blocks">
+									More
+								</a>
+							</h3>
+							<div class="pr-1" style="height:500px;overflow-y:scroll;">
+								<!-- LOOP HERE -->
+								<div ng-repeat="tx in txs">
+									<hr/>
+									<div class="media">
+										<div class="media-body">
+											<h5 class="mt-0">Tx&nbsp;
+												<a href="/tx/{{ tx.hash }}">{{ tx.hash | toHash }}</a>
+												<small class="float-right">{{ tx.time }}</small>
+											</h5>
+											<p>
+											<a class="mr-3" href="/account/{{ tx.from }}">{{ tx.from | toAddress }}</a>
+												<span class="fa fa-arrow-right float-center"></span>
+												<a class="ml-3" href="/account/{{ tx.to }}">{{ tx.to | toAddress }}</a>
+												<br><span class="badge badge-success float-right"> {{ tx.value }} ETH</span></p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6 mt-4">
+					<div class="card">
+						<div class="card-body">
+							<h3>
+								<span class="fa fa-cubes"></span>&nbsp;Blocks
+								<a class="btn btn-secondary btn-sm float-right" href="/blocks">
+									More
+								</a>
+							</h3>
+							<div class="pr-1" style="height:500px;overflow-y:scroll;">
+								<!-- LOOP HERE -->
+								<div ng-repeat="block in blocks">
+									<hr/>
+									<div class="media">
+										<div class="media-body">
+											<h5 class="mt-0">Block&nbsp;
+												<a href="/block/{{ block.Hash }}">{{ block.Number }}</a>
+												<small class="float-right">{{ block.Time }}</small>
+											</h5>
+											<p>Sealed by&nbsp;
+												<a href="/account/{{ block.Signer }}">{{ block.Signer | toAddress }}</a>
+												<br/>Includes {{ block.TransactionsNumber }} Transactions.
+												<span class="badge badge-success float-right"> {{ block.TotalValue }} ETH</span>
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Bundle everything together -->
+		<script src="js/bundle.js"></script>
+	</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "name": "clixplorer",
+  "version": "0.1.0",
+  "description": "clixplorer package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify -t brfs mockup/js/index.js -o mockup/js/bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Magicking/Clixplorer.git"
+  },
+  "homepage": "https://github.com/Magicking/Clixplorer#readme",
+  "dependencies": {
+    "angular": "^1.6.6",
+    "bootstrap": "^4.0.0-beta.2",
+    "buffer": "^5.0.8",
+    "ethereumjs-block": "^1.7.0",
+    "ethereumjs-units": "^0.2.0",
+    "ethereumjs-util": "^5.1.2",
+    "jquery": "^3.2.1",
+    "popper": "^1.0.1",
+    "web3": "^1.0.0-beta.27"
+  },
+  "devDependencies": {
+    "brfs": "^1.4.3"
+  }
+}
