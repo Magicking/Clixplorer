@@ -11,10 +11,27 @@
 		<link rel="stylesheet" href="css/font-awesome.min.css">
 	</head>
 	<body>
-		<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary" ng-controller="nav">
-			<div class="container">
-				<a class="navbar-brand" href="index.html">Clixplorer</a>
-				<a class="navbar-brand float-right" href="{{url}}">{{urlLabel}}</a>
+		<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark bg-primary" ng-controller="nav">
+			<a class="navbar-brand" href="index.html">Clixplorer</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+					<li class="nav-item active">
+						<a class="navbar-link" href="{{url}}">{{urlLabel}}</a>
+					</li>
+				</ul>
+				<div class="col-sm-3 col-md-3 my-2 my-lg-0">
+					<form class="navbar-form ng-pristine ng-scope ng-invalid ng-invalid-required" ng-submit="processRequest()" name="search_form" role="search">
+							<div class="input-group">
+									<input type="text" placeholder="Tx Hash, Address, or Block #" name="requestType" ng-model="search" class="form-control searchi ng-pristine ng-invalid ng-invalid-required ng-touched">
+									<div class="input-group-btn">
+											<button class="btn btn-primary btn-blue" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+									</div>
+							</div>
+					</form>
+				</div>
 			</div>
 		</nav>
 		<div id="header" class="container pt-5 pb-5 md-5" ng-controller="header">

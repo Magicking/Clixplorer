@@ -9,7 +9,7 @@ const BN = require('bn.js')
 const ListMax = 10
 
 var endpoint = 'wss://rinkeby-rpc.6120.eu/ws'
-var url = 'https://6120.eu'
+var hostUrl = 'https://6120.eu'
 var urlLabel = 'Rinkeby/6120'
 
 var provider = new web3.providers.WebsocketProvider(endpoint)
@@ -112,18 +112,36 @@ app.controller('header', function HeaderCtl($scope) {
 	$scope.web3 = web3
 	updateHeaderCard($scope)
 }).
-controller('nav', function NavCtl($scope, $http, $timeout) {
-	$scope.url = url
+controller('nav', function NavCtl($scope, $location) {
+	$scope.url = hostUrl
 	$scope.urlLabel = urlLabel
+	$scope.processRequest = function () {
+		if ($scope.search!==undefined){
+			var s = $scope.search
+			var regexpTx = /[0-9a-zA-Z]{64}?/;
+			var regexpAddr = /^(0x)?[0-9a-f]{40}$/; //New ETH Regular Expression for Addresses
+			var regexpBlock = /[0-9]{1,7}?/;
+			if (regexpTx.test(s)) {
+				window.location = 'tx.html?hash='+s;
+			} else {
+				if (regexpAddr.test(s.toLowerCase())) {
+					window.location = 'account.html?hash='+s;
+				} else {
+					if (regexpBlock.test(s))
+						window.location = 'block.html?hash='+s;
+				}
+			}
+		}
+	}
 }).
-controller('main', function MainCtl($scope, $http, $timeout) {
+controller('main', function MainCtl($scope) {
 	$scope.web3 = web3
 	$scope.blocks = []
 	$scope.txs = []
 
 	getScope('header').callback = (block) => formatBlock($scope, block.hash)
 }).
-controller('transaction', function TxCtl($scope, $http, $timeout) {
+controller('transaction', function TxCtl($scope) {
 	$scope.web3 = web3
 	$scope.web3.eth.getTransaction(Hash, function (error, tx) {
 		if (error) {
@@ -143,7 +161,7 @@ controller('transaction', function TxCtl($scope, $http, $timeout) {
 		})
 	})
 }).
-controller('block', function BlockCtl($scope, $http, $timeout) {
+controller('block', function BlockCtl($scope) {
 	$scope.web3 = web3
 	$scope.web3.eth.getBlock(Hash, true, function (error, block) {
 		if (error) {
@@ -156,7 +174,7 @@ controller('block', function BlockCtl($scope, $http, $timeout) {
 		$scope.$apply()
 	})
 }).
-controller('account', function AccountCtl($scope, $http, $timeout) {
+controller('account', function AccountCtl($scope) {
 	$scope.web3 = web3
 	$scope.address = Hash
 	$scope.web3.eth.getBalance(Hash, function (error, balance) {
