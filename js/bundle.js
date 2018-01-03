@@ -7,8 +7,11 @@ const Web3 = require('web3')
 const web3 = new Web3();
 const BN = require('bn.js')
 
-const endpoint = 'wss://rinkeby-rpc.6120.eu/ws'
 const ListMax = 10
+
+var endpoint = 'wss://rinkeby-rpc.6120.eu/ws'
+var url = 'https://6120.eu'
+var urlLabel = 'Rinkeby/6120'
 
 var provider = new web3.providers.WebsocketProvider(endpoint)
 web3.setProvider(provider)
@@ -109,6 +112,10 @@ function updateHeaderCard($scope) {
 app.controller('header', function HeaderCtl($scope) {
 	$scope.web3 = web3
 	updateHeaderCard($scope)
+}).
+controller('nav', function NavCtl($scope, $http, $timeout) {
+	$scope.url = url
+	$scope.urlLabel = urlLabel
 }).
 controller('main', function MainCtl($scope, $http, $timeout) {
 	$scope.web3 = web3

@@ -11,9 +11,10 @@
 		<link rel="stylesheet" href="css/font-awesome.min.css">
 	</head>
 	<body>
-		<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+		<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary" ng-controller="nav">
 			<div class="container">
-				<a class="navbar-brand" href="#">Clixplorer</a>
+				<a class="navbar-brand" href="index.html">Clixplorer</a>
+				<a class="navbar-brand float-right" href="{{url}}">{{urlLabel}}</a>
 			</div>
 		</nav>
 		<div id="header" class="container pt-5 pb-5 md-5" ng-controller="header">
