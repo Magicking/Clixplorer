@@ -5,7 +5,7 @@ const Web3 = require('web3')
 const web3 = new Web3();
 const BN = require('bn.js')
 
-const endpoint = 'ws://rinkeby-rpc.6120.eu/ws'
+const endpoint = 'wss://rinkeby-rpc.6120.eu/ws'
 const ListMax = 10
 
 var provider = new web3.providers.WebsocketProvider(endpoint)
