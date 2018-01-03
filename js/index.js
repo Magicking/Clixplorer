@@ -1,6 +1,7 @@
 const ethUtils = require('ethereumjs-util')
 const ethBlock = require('ethereumjs-block/from-rpc')
 const angular = require('angular')
+const $ = require('jquery')
 const Web3 = require('web3')
 const web3 = new Web3();
 const BN = require('bn.js')
@@ -10,7 +11,12 @@ const ListMax = 10
 
 var provider = new web3.providers.WebsocketProvider(endpoint)
 web3.setProvider(provider)
+app = angular.module('clixplorer', [])
 var Hash = getParameterByName('hash')
+
+function getScope(ctrlName) {
+	return angular.element($('#'+ctrlName)).scope();
+}
 
 function getParameterByName(name) {
 	url = window.location.href;
@@ -66,6 +72,7 @@ function formatBlock($scope, hash) {
 			TransactionsNumber: block.transactions.length,
 			TotalValue: txInfo['totalValue'].toString()
 		}
+
 		$scope.blocks.unshift(tmplBlock)
 		var l = $scope.blocks.length - ListMax
 		$scope.blocks.splice(ListMax, l)
@@ -73,15 +80,12 @@ function formatBlock($scope, hash) {
 	})
 }
 
-app = angular.module('clixplorer', [])
-app.controller('main', function MainCtl($scope, $http, $timeout) {
-	$scope.web3 = web3
-	$scope.blocks = []
-	$scope.txs = []
+function updateHeaderCard($scope) {
 	$scope.web3.eth.getBlock("latest").then(function (block, error) {
 		if (!error) {
 			updateInfo($scope, block)
-			formatBlock($scope, block.hash)
+			if (typeof($scope.callback) == "function")
+				$scope.callback(block)
 			$scope.$apply()
 		} else {
 			console.log('Error:'+error)
@@ -94,22 +98,26 @@ app.controller('main', function MainCtl($scope, $http, $timeout) {
 				return
 			}
 			updateInfo($scope, block)
-			formatBlock($scope, block.hash)
+			if (typeof($scope.callback) == "function")
+				$scope.callback(block)
 			$scope.$apply()
 		})
 	})
+}
+
+app.controller('header', function HeaderCtl($scope) {
+	$scope.web3 = web3
+	updateHeaderCard($scope)
+}).
+controller('main', function MainCtl($scope, $http, $timeout) {
+	$scope.web3 = web3
+	$scope.blocks = []
+	$scope.txs = []
+
+	getScope('header').callback = (block) => formatBlock($scope, block.hash)
 }).
 controller('transaction', function TxCtl($scope, $http, $timeout) {
 	$scope.web3 = web3
-	$scope.web3.eth.subscribe('newBlockHeaders', function(error, block) {
-		if (error) {
-			console.log('Error:'+error)
-			console.log(error)
-			return
-		}
-		updateInfo($scope, block)
-		$scope.$apply()
-	})
 	$scope.web3.eth.getTransaction(Hash, function (error, tx) {
 		if (error) {
 			console.log('Error:'+error)
@@ -130,15 +138,6 @@ controller('transaction', function TxCtl($scope, $http, $timeout) {
 }).
 controller('block', function BlockCtl($scope, $http, $timeout) {
 	$scope.web3 = web3
-	$scope.web3.eth.subscribe('newBlockHeaders', function(error, block) {
-		if (error) {
-			console.log('Error:'+error)
-			console.log(error)
-			return
-		}
-		updateInfo($scope, block)
-		$scope.$apply()
-	})
 	$scope.web3.eth.getBlock(Hash, true, function (error, block) {
 		if (error) {
 			console.log('Error:'+error)
@@ -169,15 +168,6 @@ controller('account', function AccountCtl($scope, $http, $timeout) {
 			$scope.code = code
 			$scope.$apply()
 		})
-	})
-	$scope.web3.eth.subscribe('newBlockHeaders', function(error, block) {
-		if (error) {
-			console.log('Error:'+error)
-			console.log(error)
-			return
-		}
-		updateInfo($scope, block)
-		$scope.$apply()
 	})
 	$scope.logs = []
 	$scope.web3.eth.subscribe('logs', {address: Hash}, function(error, log) {
