@@ -24,17 +24,17 @@
 					</div>
 					<div class="card-body card-block">
 						<h4 class="card-title">
-							<span aria-count-up="">#&nbsp;{{info.BestBlockNumber}}</span>
+							<span>#&nbsp;{{info.BestBlockNumber}}</span>
 						</h4>
 					</div>
 				</div>
 				<div class="card text-center card-outline-info mt-2">
 					<div class="card-header card-outline-info">
-						<span class="fa fa-user-circle-o"></span>&nbsp;Last signer
+						<span class="fa fa-user-circle-o"></span>&nbsp;Last sealer
 					</div>
 					<div class="card-body card-block">
 						<h4 class="card-title">
-							<span aria-count-up="">{{info.LastSigner}}</span>
+							<span>{{info.LastSigner|toAddress}}</span>
 						</h4>
 					</div>
 				</div>
@@ -45,9 +45,6 @@
 						<div class="card-body">
 							<h3>
 								<span class="fa fa-cubes"></span>&nbsp;Transactions
-								<a class="btn btn-secondary btn-sm float-right" href="/blocks">
-									More
-								</a>
 							</h3>
 							<div class="pr-1" style="height:500px;overflow-y:scroll;">
 								<!-- LOOP HERE -->
@@ -56,14 +53,14 @@
 									<div class="media">
 										<div class="media-body">
 											<h5 class="mt-0">Tx&nbsp;
-												<a href="/tx/{{ tx.hash }}">{{ tx.hash | toHash }}</a>
+												<a href="tx.html?hash={{ tx.hash }}">{{ tx.hash | toHash }}</a>
 												<small class="float-right">{{ tx.time }}</small>
 											</h5>
 											<p>
-											<a class="mr-3" href="/account/{{ tx.from }}">{{ tx.from | toAddress }}</a>
+											<a class="mr-3" href="account.html?hash={{ tx.from }}">{{ tx.from | toAddress }}</a>
 												<span class="fa fa-arrow-right float-center"></span>
-												<a class="ml-3" href="/account/{{ tx.to }}">{{ tx.to | toAddress }}</a>
-												<br><span class="badge badge-success float-right"> {{ tx.value }} ETH</span></p>
+												<a class="ml-3" href="account.html?hash={{ tx.to }}">{{ tx.to | toAddress }}</a>
+												<br><span class="badge badge-success float-right"> {{ tx.value|fromWei }}</span></p>
 										</div>
 									</div>
 								</div>
@@ -87,13 +84,13 @@
 									<div class="media">
 										<div class="media-body">
 											<h5 class="mt-0">Block&nbsp;
-												<a href="/block/{{ block.Hash }}">{{ block.Number }}</a>
-												<small class="float-right">{{ block.Time }}</small>
+												<a href="block.html?hash={{ block.Hash }}">{{ block.Number }}</a>
+												<small class="float-right">{{ block.Time*1000 | date:'yyyy-MM-dd HH:mm:ss Z' }}</small>
 											</h5>
 											<p>Sealed by&nbsp;
-												<a href="/account/{{ block.Signer }}">{{ block.Signer | toAddress }}</a>
+												<a href="account.html?hash={{ block.Signer }}">{{ block.Signer | toAddress }}</a>
 												<br/>Includes {{ block.TransactionsNumber }} Transactions.
-												<span class="badge badge-success float-right"> {{ block.TotalValue }} ETH</span>
+												<span class="badge badge-success float-right"> {{ block.TotalValue|fromWei }}</span>
 											</p>
 										</div>
 									</div>

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "browserify -t brfs mockup/js/index.js -o mockup/js/bundle.js"
+    "build": "browserify -t brfs js/index.js -o js/bundle.js"
   },
   "repository": {
     "type": "git",
@@ -14,8 +14,10 @@
   "homepage": "https://github.com/Magicking/Clixplorer#readme",
   "dependencies": {
     "angular": "^1.6.6",
+    "bn.js": "^4.11.8",
     "bootstrap": "^4.0.0-beta.2",
     "buffer": "^5.0.8",
+    "components-bootstrap": "^4.0.0-beta",
     "ethereumjs-block": "^1.7.0",
     "ethereumjs-units": "^0.2.0",
     "ethereumjs-util": "^5.1.2",

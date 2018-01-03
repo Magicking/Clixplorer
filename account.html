@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" ng-app="clixplorer">
+	<head>
+		<title>Clixplorer</title>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/font-awesome.min.css">
+	</head>
+	<body ng-controller="account">
+		<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+			<div class="container">
+				<a class="navbar-brand" href="#">Clixplorer</a>
+			</div>
+		</nav>
+		<div class="container pt-5 pb-5 md-5">
+			<div class="card-group">
+				<div class="card text-center card-outline-info mt-2">
+					<div class="card-header card-outline-info">
+						<span class="fa fa-cube"></span>&nbsp;Best block
+					</div>
+					<div class="card-body card-block">
+						<h4 class="card-title">
+							<span>#&nbsp;{{info.BestBlockNumber}}</span>
+						</h4>
+					</div>
+				</div>
+				<div class="card text-center card-outline-info mt-2">
+					<div class="card-header card-outline-info">
+						<span class="fa fa-user-circle-o"></span>&nbsp;Last sealer
+					</div>
+					<div class="card-body card-block">
+						<h4 class="card-title">
+							<span>{{info.LastSigner|toAddress}}</span>
+						</h4>
+					</div>
+				</div>
+			</div> <!-- card-group -->
+			<div class="row">
+				<div class="col-sm-12 mt-4">
+					<div class="card">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-md-12">
+									<h3 class="text-left mt-3"><span class=
+									"fa fa-address-card">&nbsp;</span>{{address|toAddress: 100}}</h3>
+								</div>
+							</div>
+							<div class="table-responsive">
+								<table class="table" id="account">
+									<tbody>
+										<tr>
+											<th>Balance</th>
+											<td>{{balance|fromWei}}</td>
+										</tr>
+										<tr>
+											<th>Code</th>
+											<td>{{code}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 mt-4">
+					<div class="card">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-md-12">
+									<h3 class="text-left mt-3"><span class=
+									"fa fa-newspaper-o">&nbsp;</span>Events</h3>
+								</div>
+							</div>
+							<div class="table-responsive">
+								<div ng-repeat="log in logs"><hr/>
+									<table class="table" id="account">
+										<tbody>
+											<tr>
+												<th>Block</th>
+												<td><a href="block.html?hash={{log.blockHash}}">{{log.blockNumber}}</a></td>
+											</tr>
+											<tr>
+												<th>Transaction hash</th>
+												<td><a href="tx.html?hash={{log.transactionHash}}">{{log.transactionHash}}</a></td>
+											</tr>
+											<tr>
+												<th>Topics</th>
+												<td>{{log.topics}}</td>
+											</tr>
+											<tr>
+												<th>Data</th>
+												<td>{{log.data}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Bundle everything together -->
+		<script src="js/bundle.js"></script>
+	</body>
+</html>

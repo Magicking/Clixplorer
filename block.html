@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en" ng-app="clixplorer">
+	<head>
+		<title>Clixplorer</title>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/font-awesome.min.css">
+	</head>
+	<body ng-controller="block">
+		<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+			<div class="container">
+				<a class="navbar-brand" href="#">Clixplorer</a>
+			</div>
+		</nav>
+		<div class="container pt-5 pb-5 md-5">
+			<div class="card-group">
+				<div class="card text-center card-outline-info mt-2">
+					<div class="card-header card-outline-info">
+						<span class="fa fa-cube"></span>&nbsp;Best block
+					</div>
+					<div class="card-body card-block">
+						<h4 class="card-title">
+							<span>#&nbsp;{{info.BestBlockNumber}}</span>
+						</h4>
+					</div>
+				</div>
+				<div class="card text-center card-outline-info mt-2">
+					<div class="card-header card-outline-info">
+						<span class="fa fa-user-circle-o"></span>&nbsp;Last sealer
+					</div>
+					<div class="card-body card-block">
+						<h4 class="card-title">
+							<span>{{info.LastSigner|toAddress}}</span>
+						</h4>
+					</div>
+				</div>
+			</div> <!-- card-group -->
+			<div class="row">
+				<div class="col-sm-12 mt-4">
+					<div class="card">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-md-12">
+									<h1 class="display-5 text-center mt-3"><span class=
+									"fa fa-cubes">&nbsp;</span>Block {{block.number}}</h1>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-md-12">
+									<a class="btn btn-primary" href=
+									"block.html?hash={{block.parentHash}}">Previous</a>
+								</div>
+							</div>
+							<div class="table-responsive">
+								<table class="table" id="block">
+									<tbody>
+										<tr>
+											<th>Hash:</th>
+											<td>
+											  {{block.hash}}</td>
+										</tr>
+										<tr>
+											<th>Sealer:</th>
+											<td>
+												<a href=
+												"account.html?hash={{block.sealer}}">{{block.sealer}}</a>
+											</td>
+										</tr>
+										<tr>
+											<th>Tx:</th>
+											<td>{{block.transactions.length}} Transactions</td>
+										</tr>
+										<tr>
+											<th>Gas Limit:</th>
+											<td>{{block.gasLimit}}</td>
+										</tr>
+										<tr>
+											<th>Gas Usage:</th>
+											<td>{{block.gasUsed}} (%{{block.gasUsed / block.gasLimit * 100}})</td>
+										</tr>
+										<tr>
+											<th>Time:</th>
+											<td>{{ block.timestamp*1000 | date:'yyyy-MM-dd HH:mm:ss Z' }}</td>
+										</tr>
+										<tr>
+											<th>Size:</th>
+											<td>{{block.size}} bytes</td>
+										</tr>
+										<tr>
+											<th>Extra</th>
+											<td>{{block.extraData}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="tab-pane fade active show" id="transactions">
+								<div class="table-responsive">
+									<table class="table" id="transactions-table">
+										<thead>
+											<tr>
+												<th>Hash</th>
+												<th>Type</th>
+												<th>From</th>
+												<th>To</th>
+												<th>Value</th>
+												<th>Gas</th>
+												<th>Gas Price</th>
+											</tr>
+										</thead>
+										<tbody class="font-weight-bold">
+										  <tr ng-repeat="tx in block.transactions">
+												<td>
+													<a href=
+													"tx.html?hash={{tx.hash}}">
+													{{tx.hash|toHash}}</a>
+												</td>
+												<td class="text-capitalize">tx</td>
+												<td>
+													<a href=
+													"account.html?hash={{tx.from}}">
+													{{tx.from|toAddress}}</a>
+												</td>
+												<td>
+													<a href=
+													"account.html?hash={{tx.to}}">
+													{{tx.to|toAddress}}</a>
+												</td>
+												<td>{{tx.value|fromWei}}</td>
+												<td>{{tx.gas}}</td>
+												<td>{{tx.gasPrice|fromWei}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Bundle everything together -->
+		<script src="js/bundle.js"></script>
+	</body>
+</html>

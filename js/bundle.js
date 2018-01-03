@@ -4,50 +4,69 @@ const ethBlock = require('ethereumjs-block/from-rpc')
 const angular = require('angular')
 const Web3 = require('web3')
 const web3 = new Web3();
+const BN = require('bn.js')
 
-const endpoint = 'ws://localhost:8546'
+const endpoint = 'ws://rinkeby-rpc.6120.eu/ws'
 const ListMax = 10
 
+var provider = new web3.providers.WebsocketProvider(endpoint)
+web3.setProvider(provider)
+var Hash = getParameterByName('hash')
+
+function getParameterByName(name) {
+	url = window.location.href;
+	name = name.replace(/[\[\]]/g, "\\$&");
+	var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+		results = regex.exec(url);
+	if (!results) return null;
+	if (!results[2]) return '';
+	return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function getSigner(block) {
+	var sealers = block.extraData
+	if (sealers.length <= 130)
+		return undefined
+	var sig = ethUtils.fromRpcSig('0x' + sealers.substring(sealers.length - 130, sealers.length)) // remove signature
+	block.extraData = block.extraData.substring(0, block.extraData.length - 130)
+	var blk = ethBlock(block)
+	blk.header.difficulty[0] = block.difficulty
+	var sigHash = ethUtils.sha3(blk.header.serialize())
+	var pubkey = ethUtils.ecrecover(sigHash, sig.v, sig.r, sig.s)
+	return ethUtils.pubToAddress(pubkey).toString('hex')
+}
+
 function updateInfo($scope, block) {
-	$scope.info = {BestBlockNumber: block.number}
+	$scope.info = {BestBlockNumber: block.number,
+		LastSigner: getSigner(block)}
 }
 
 function updateTransaction($scope, txs) {
-	var totalValue = 0
+	var totalValue = new BN('0', 10)
 	for (var i = 0; i < txs.length; i++) {
 		if (i < ListMax) $scope.txs.unshift(txs[i])
-		totalValue += txs[i].value
+		totalValue = totalValue.add(new BN(String(txs[i].value), 10))
 	}
 	var l = $scope.txs.length - ListMax
 	$scope.txs.splice(ListMax, l)
 	return {totalValue: totalValue}
 }
 
-function formatBlock($scope, blockHeaders) {
-	$scope.web3.eth.getBlock(blockHeaders.hash, true, function (error, block) {
+function formatBlock($scope, hash) {
+	$scope.web3.eth.getBlock(hash, true, function (error, block) {
 		if (error) {
 			console.log('error:' + error)
 			console.log(error)
 			return
 		}
-		var sealers = block.extraData
-		var sig = ethUtils.fromRpcSig('0x' + sealers.substring(sealers.length-130, sealers.length)) // remove vanity
-		blockHeaders.extraData = blockHeaders.extraData.substring(0, blockHeaders.extraData.length - 130)
-		var blk = ethBlock(blockHeaders)
-		blk.header.difficulty[0] = 2
-		var sigHash = ethUtils.sha3(blk.header.serialize())
-		var pubkey = ethUtils.ecrecover(sigHash, sig.v, sig.r, sig.s)
-		var signer = ethUtils.pubToAddress(pubkey).toString('hex')
-		$scope.info.LastSigner = signer
-		
 		txInfo = updateTransaction($scope, block.transactions)
-		var tmplBlock = {Hash: block.hash,
+		var tmplBlock = {Hash: hash,
 			'Number': block.number,
-			Signer: signer,
+			Signer: getSigner(block),
 			Time: block.timestamp,
 			TransactionsNumber: block.transactions.length,
-			TotalValue: txInfo['totalValue']
-			}
+			TotalValue: txInfo['totalValue'].toString()
+		}
 		$scope.blocks.unshift(tmplBlock)
 		var l = $scope.blocks.length - ListMax
 		$scope.blocks.splice(ListMax, l)
@@ -57,47 +76,177 @@ function formatBlock($scope, blockHeaders) {
 
 app = angular.module('clixplorer', [])
 app.controller('main', function MainCtl($scope, $http, $timeout) {
-	// var endpoint = config.get('clix.RPC_ENDPOINT')
-	// TODO handle http endpoint
-	var provider = new web3.providers.WebsocketProvider(endpoint)
-
-	web3.setProvider(provider)
 	$scope.web3 = web3
 	$scope.blocks = []
 	$scope.txs = []
 	$scope.web3.eth.getBlock("latest").then(function (block, error) {
-		if (error) {
+		if (!error) {
+			updateInfo($scope, block)
+			formatBlock($scope, block.hash)
+			$scope.$apply()
+		} else {
 			console.log('Error:'+error)
 			console.log(error)
-			return
 		}
-		updateInfo($scope, block)
-		formatBlock($scope, block)
-		$scope.$apply()
-		$scope.web3.eth.subscribe('newBlockHeaders', function(error, block){
+		$scope.web3.eth.subscribe('newBlockHeaders', function(error, block) {
 			if (error) {
 				console.log('Error:'+error)
 				console.log(error)
 				return
 			}
 			updateInfo($scope, block)
-			formatBlock($scope, block)
+			formatBlock($scope, block.hash)
 			$scope.$apply()
-			})
+		})
 	})
 }).
-filter('toAddress', function () {
-		return function (text, length, end) {
+controller('transaction', function TxCtl($scope, $http, $timeout) {
+	$scope.web3 = web3
+	$scope.web3.eth.subscribe('newBlockHeaders', function(error, block) {
+		if (error) {
+			console.log('Error:'+error)
+			console.log(error)
+			return
+		}
+		updateInfo($scope, block)
+		$scope.$apply()
+	})
+	$scope.web3.eth.getTransaction(Hash, function (error, tx) {
+		if (error) {
+			console.log('Error:'+error)
+			console.log(error)
+			return
+		}
+		if (tx == undefined) {
+			console.log('No transaction found')
+			return
+		}
+		if (typeof $scope.info == "undefined")
+			$scope.info = {BestBlockNumber: tx.blockNumber}
+		$scope.web3.eth.getTransactionReceipt(tx.hash, function (error, txReceipt) {
+			$scope.tx = Object.assign({}, tx, txReceipt)
+			$scope.$apply()
+		})
+	})
+}).
+controller('block', function BlockCtl($scope, $http, $timeout) {
+	$scope.web3 = web3
+	$scope.web3.eth.subscribe('newBlockHeaders', function(error, block) {
+		if (error) {
+			console.log('Error:'+error)
+			console.log(error)
+			return
+		}
+		updateInfo($scope, block)
+		$scope.$apply()
+	})
+	$scope.web3.eth.getBlock(Hash, true, function (error, block) {
+		if (error) {
+			console.log('Error:'+error)
+			console.log(error)
+			return
+		}
+		$scope.block = block
+		$scope.block.sealer = getSigner(block)
+		$scope.$apply()
+	})
+}).
+controller('account', function AccountCtl($scope, $http, $timeout) {
+	$scope.web3 = web3
+	$scope.address = Hash
+	$scope.web3.eth.getBalance(Hash, function (error, balance) {
+		if (error) {
+			console.log('Error:'+error)
+			console.log(error)
+			return
+		}
+		$scope.balance = balance
+		$scope.web3.eth.getCode(Hash, function (error, code) {
+			if (error) {
+				console.log('Error:'+error)
+				console.log(error)
+				return
+			}
+			$scope.code = code
+			$scope.$apply()
+		})
+	})
+	$scope.web3.eth.subscribe('newBlockHeaders', function(error, block) {
+		if (error) {
+			console.log('Error:'+error)
+			console.log(error)
+			return
+		}
+		updateInfo($scope, block)
+		$scope.$apply()
+	})
+	$scope.logs = []
+	$scope.web3.eth.subscribe('logs', {address: Hash}, function(error, log) {
+		if (error) {
+			console.log('Error:'+error)
+			console.log(error)
+			return
+		}
+		$scope.logs.unshift(log)
+		var l = $scope.logs.length - ListMax
+		$scope.logs.splice(ListMax, l)
+		$scope.web3.eth.getBalance(Hash, function (error, balance) {
+			if (error) {
+				console.log('Error:'+error)
+				console.log(error)
+				return
+			}
+			$scope.balance = balance
+			$scope.$apply()
+		})
+	})
+}).
+filter('fromWei', function () {
+		return function (text, unit) {
+		if (unit == undefined)
+			unit = 'ether'
+
+		if (text == undefined)
+			return 'undefined'
+
+		return web3.utils.fromWei(String(text), unit) + ' ' + unit
+	}
+}).
+filter('toAddressOrContract', function () {
+		return function (text, length, contract) {
 		if (isNaN(length))
 			length = 16
 
-		if (end === undefined)
-			end = '…'
+		var end = '…'
 
 		if (text === null)
-			return 'New contract creation'
+			return contract + ' [new]'
+
+		if (length >= String(text).length)
+			end = ''
 
 		return String(text).substring(0, length) + end
+	}
+}).
+filter('toAddress', function () {
+		return function (text, length) {
+		if (isNaN(length))
+			length = 16
+
+		var end = '…'
+
+		if (text == undefined)
+			return ''
+		if (text === null)
+			return 'new contract'
+
+		if (length >= String(text).length)
+			end = ''
+
+		var prefix = ''
+		if (String(text).substring(0, 2) != '0x')
+			prefix = '0x'
+		return prefix + String(text).substring(0, length) + end
 	}
 }).
 filter('toHash', function () {
@@ -115,7 +264,7 @@ filter('toHash', function () {
 	}
 })
 
-},{"angular":8,"ethereumjs-block/from-rpc":103,"ethereumjs-util":109,"web3":334}],2:[function(require,module,exports){
+},{"angular":8,"bn.js":27,"ethereumjs-block/from-rpc":103,"ethereumjs-util":109,"web3":334}],2:[function(require,module,exports){
 (function (process){
 /* Copyright (c) 2017 Rod Vagg, MIT License */
 
@@ -58298,6 +58447,7 @@ module.exports={
 }
 
 },{}],109:[function(require,module,exports){
+(function (Buffer){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -58308,7 +58458,6 @@ var assert = require('assert');
 var rlp = require('rlp');
 var BN = require('bn.js');
 var createHash = require('create-hash');
-var Buffer = require('buffer/').Buffer;
 Object.assign(exports, require('ethjs-util'));
 
 /**
@@ -58967,7 +59116,8 @@ exports.defineProperties = function (self, fields, data) {
   }
 };
 
-},{"assert":23,"bn.js":27,"buffer/":59,"create-hash":63,"ethjs-util":112,"keccak":146,"rlp":246,"secp256k1":250}],110:[function(require,module,exports){
+}).call(this,require("buffer").Buffer)
+},{"assert":23,"bn.js":27,"buffer":59,"create-hash":63,"ethjs-util":112,"keccak":146,"rlp":246,"secp256k1":250}],110:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');

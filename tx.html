@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en" ng-app="clixplorer">
+	<head>
+		<title>Clixplorer</title>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/font-awesome.min.css">
+	</head>
+	<body ng-controller="transaction">
+		<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+			<div class="container">
+				<a class="navbar-brand" href="#">Clixplorer</a>
+			</div>
+		</nav>
+		<div class="container pt-5 pb-5 md-5">
+			<div class="card-group">
+				<div class="card text-center card-outline-info mt-2">
+					<div class="card-header card-outline-info">
+						<span class="fa fa-cube"></span>&nbsp;Best block
+					</div>
+					<div class="card-body card-block">
+						<h4 class="card-title">
+							<span>#&nbsp;{{info.BestBlockNumber}}</span>
+						</h4>
+					</div>
+				</div>
+				<div class="card text-center card-outline-info mt-2">
+					<div class="card-header card-outline-info">
+						<span class="fa fa-user-circle-o"></span>&nbsp;Last sealer
+					</div>
+					<div class="card-body card-block">
+						<h4 class="card-title">
+							<span>{{info.LastSigner|toAddress}}</span>
+						</h4>
+					</div>
+				</div>
+			</div> <!-- card-group -->
+			<div class="row">
+				<div class="col-sm-12 mt-4">
+					<div class="card">
+						<div class="card-body">
+							<h4 class="card-title"><span class="fa fa-credit-card">&nbsp;</span>Transaction details</h4>
+							<h5 class="text-muted d-none d-md-block">
+								{{tx.hash}}</h5><small class="text-muted d-md-none d-lg-none d-xl-none">{{tx.hash|toHash}}</small>
+							<hr>
+							<div class="table-responsive">
+								<table class="table table-sm borderless">
+									<tbody>
+										<tr>
+											<th>Hash</th>
+											<td>
+											{{tx.hash}}</td>
+										</tr>
+										<tr>
+											<th>Block</th>
+											<td>
+												<a href="block.html?hash={{tx.blockHash}}">{{tx.blockNumber}} | {{info.BestBlockNumber - tx.blockNumber}} Confirmations</a>
+											</td>
+										</tr>
+										<tr>
+											<th>From</th>
+											<td>
+												<a href=
+												"account.html?hash={{tx.from}}">{{tx.from|toAddress: 100}}</a>
+											</td>
+										</tr>
+										<tr>
+											<th>To</th>
+											<td>
+												<a href=
+												"account.html?hash={{tx.from}}">{{tx.to|toAddressOrContract: 100:tx.contractAddress}}</a>
+											</td>
+										</tr>
+										<tr>
+											<th>Value</th>
+											<td>{{tx.value|fromWei}}</td>
+										</tr>
+										<tr>
+											<th>Gas Price</th>
+											<td>{{tx.gasPrice}}</td>
+										</tr>
+										<tr>
+											<th>Gas Used</th>
+											<td>{{tx.gasUsed}}</td>
+										</tr>
+										<tr>
+											<th>Cumulative Gas Used</th>
+											<td>{{tx.cumulativeGasUsed}}</td>
+										</tr>
+										<tr>
+											<th>Nonce</th>
+											<td>{{tx.nonce}}</td>
+										</tr>
+										<tr>
+											<th>Input</th>
+											<td>{{tx.input}}</td>
+										</tr>
+										<tr>
+											<th>Logs</th>
+											<td>{{tx.logs}}</td>
+										</tr>
+										<tr>
+											<th>Logs Bloom</th>
+											<td>{{tx.logsBloom}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Bundle everything together -->
+		<script src="js/bundle.js"></script>
+	</body>
+</html>
