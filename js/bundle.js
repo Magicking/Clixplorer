@@ -251,7 +251,7 @@ filter('toAddress', function () {
 		var end = '…'
 
 		if (text == undefined)
-			return ''
+			return 'new contract'
 		if (text === null)
 			return 'new contract'
 
