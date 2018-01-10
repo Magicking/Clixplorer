@@ -92,7 +92,7 @@
 											<th>To</th>
 											<td>
 												<a href=
-												"account.html?hash={{tx.from}}">{{tx.to|toAddressOrContract: 100:tx.contractAddress}}</a>
+												"account.html?hash={{tx.to ? tx.to : tx.contractAddress}}">{{tx.to|toAddressOrContract: 100:tx.contractAddress}}</a>
 											</td>
 										</tr>
 										<tr>
