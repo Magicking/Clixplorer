@@ -13,7 +13,7 @@
 	<body>
 		<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark bg-primary" ng-controller="nav">
 			<a class="navbar-brand" href="index.html">Clixplorer</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="true" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -42,7 +42,7 @@
 					</div>
 					<div class="card-body card-block">
 						<h4 class="card-title">
-						  <span>#&nbsp;<a href="block.html?hash={{info.BestBlockNumber}}">{{info.BestBlockNumber}}</a></span>
+							<span>#&nbsp;<a href="block.html?hash={{info.BestBlockNumber}}">{{info.BestBlockNumber}}</a></span>
 						</h4>
 					</div>
 				</div>
@@ -52,12 +52,11 @@
 					</div>
 					<div class="card-body card-block">
 						<h4 class="card-title">
-						  <span><a href="account.html?hash={{info.LastSigner}}">{{info.LastSigner|toAddress}}</a></span>
+							<span><a href="account.html?hash={{info.LastSigner}}">{{info.LastSigner|toAddress}}</a></span>
 						</h4>
 					</div>
 				</div>
 			</div>
-
 <!-- card-group -->
 			<div class="row" ng-controller="account">
 				<div class="col-sm-12 mt-4">

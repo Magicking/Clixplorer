@@ -3,8 +3,11 @@ const ethBlock = require('ethereumjs-block/from-rpc')
 const angular = require('angular')
 const $ = require('jquery')
 const Web3 = require('web3')
-const web3 = new Web3();
+const web3 = new Web3()
 const BN = require('bn.js')
+global.$ = $
+global.Popper = require('popper.js')
+require('bootstrap')
 
 const ListMax = 10
 
