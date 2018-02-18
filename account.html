@@ -58,26 +58,63 @@
 				</div>
 			</div>
 <!-- card-group -->
-			<div class="row" ng-controller="account">
-				<div class="col-sm-12 mt-4">
-					<div class="card">
-						<div class="card-body">
-							<div class="row">
-								<div class="col-md-12">
-									<h3 class="text-left mt-3"><span class=
-									"fa fa-address-card">&nbsp;</span>{{address|toAddress: 100}}</h3>
-								</div>
+		<div class="row" ng-controller="account">
+			<div class="col-sm-12 mt-4">
+				<div class="card">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-md-12">
+								<h3 class="text-left mt-3"><span class=
+								"fa fa-address-card">&nbsp;</span>{{address|toAddress: 100}}</h3>
 							</div>
-							<div class="table-responsive">
+						</div>
+						<div class="table-responsive">
+							<table class="table" id="account">
+								<tbody>
+									<tr>
+										<th>Balance</th>
+										<td>{{balance|fromWei}}</td>
+									</tr>
+									<tr>
+										<th>Code</th>
+										<td>{{code}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row" ng-controller="account">
+			<div class="col-sm-12 mt-4">
+				<div class="card">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-md-12">
+								<h3 class="text-left mt-3"><span class=
+								"fa fa-newspaper-o">&nbsp;</span>Events</h3>
+							</div>
+						</div>
+						<div class="table-responsive">
+							<div ng-repeat="log in logs"><hr/>
 								<table class="table" id="account">
 									<tbody>
 										<tr>
-											<th>Balance</th>
-											<td>{{balance|fromWei}}</td>
+											<th>Block</th>
+											<td><a href="block.html?hash={{log.blockHash}}">{{log.blockNumber}}</a></td>
 										</tr>
 										<tr>
-											<th>Code</th>
-											<td>{{code}}</td>
+											<th>Transaction hash</th>
+											<td><a href="tx.html?hash={{log.transactionHash}}">{{log.transactionHash}}</a></td>
+										</tr>
+										<tr>
+											<th>Topics</th>
+											<td>{{log.topics}}</td>
+										</tr>
+										<tr>
+											<th>Data</th>
+											<td>{{log.data}}</td>
 										</tr>
 									</tbody>
 								</table>
@@ -86,44 +123,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-sm-12 mt-4">
-					<div class="card">
-						<div class="card-body">
-							<div class="row">
-								<div class="col-md-12">
-									<h3 class="text-left mt-3"><span class=
-									"fa fa-newspaper-o">&nbsp;</span>Events</h3>
-								</div>
-							</div>
-							<div class="table-responsive">
-								<div ng-repeat="log in logs"><hr/>
-									<table class="table" id="account">
-										<tbody>
-											<tr>
-												<th>Block</th>
-												<td><a href="block.html?hash={{log.blockHash}}">{{log.blockNumber}}</a></td>
-											</tr>
-											<tr>
-												<th>Transaction hash</th>
-												<td><a href="tx.html?hash={{log.transactionHash}}">{{log.transactionHash}}</a></td>
-											</tr>
-											<tr>
-												<th>Topics</th>
-												<td>{{log.topics}}</td>
-											</tr>
-											<tr>
-												<th>Data</th>
-												<td>{{log.data}}</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+		</div>
 		</div>
 		<!-- Bundle everything together -->
 		<script src="js/bundle.js"></script>
