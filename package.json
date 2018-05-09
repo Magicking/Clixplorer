@@ -13,19 +13,19 @@
   },
   "homepage": "https://github.com/Magicking/Clixplorer#readme",
   "dependencies": {
-    "angular": "^1.6.6",
+    "angular": "^1.6.10",
     "bn.js": "^4.11.8",
-    "bootstrap": "^4.0.0-beta.2",
-    "buffer": "^5.0.8",
+    "bootstrap": "^4.1.1",
+    "buffer": "^5.1.0",
     "components-bootstrap": "^4.0.0-beta",
-    "ethereumjs-block": "^1.7.0",
+    "ethereumjs-block": "^1.7.1",
     "ethereumjs-units": "^0.2.0",
-    "ethereumjs-util": "^5.1.2",
-    "jquery": "^3.2.1",
-    "popper.js": "^1.12.9",
+    "ethereumjs-util": "^5.2.0",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.14.3",
     "web3": "^1.0.0-beta.27"
   },
   "devDependencies": {
-    "brfs": "^1.4.3"
+    "brfs": "^1.6.1"
   }
 }
