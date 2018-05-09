@@ -11,7 +11,7 @@ require('bootstrap')
 
 const ListMax = 10
 
-var endpoint = 'wss://rinkeby-rpc.6120.eu/ws'
+var endpoint = 'wss://rinkeby.eth.6120.eu/ws'
 var hostUrl = 'https://6120.eu'
 var urlLabel = 'Rinkeby/6120'
 
